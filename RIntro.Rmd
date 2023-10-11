@@ -18,10 +18,6 @@ subtitle: "Jump into a notebook"
 <!-- ## Setup -->
 
 ```{r setup, echo=FALSE, include=FALSE}
-
-#What is a library? A library refers to a bundle of code, which includes various functions and datasets, that enables you to perform specific tasks that are not included in the base R functions.
-
-
 library(knitr) #to produce dynamic reports, allowing the embedding of R code, its results, and text into a single document
 # knitr::opts_chunk$set(echo = TRUE)
 library(haven) #to import and export data in SPSS, Stata, and SAS formats, enhancing interoperability with other statistical software
