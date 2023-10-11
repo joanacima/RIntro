@@ -131,17 +131,6 @@ gg_miss_upset(nlswork)
 ```
 
 ```{r}
-n_var_miss(nlswork)
-
-ggplot(nlswork,aes(x=age,y=ln_wage))+
-  geom_point()
-
-ggplot(nlswork,aes(x=age,y=ln_wage))+
-  geom_miss_point()
-
-ggplot(nlswork,aes(x=age,y=ln_wage))+
-  geom_miss_point() +
-  facet_wrap(~race)
 
 gg_miss_fct(x = nlswork,fct = year)
 
@@ -164,7 +153,7 @@ Handling missing data is a crucial step in the exploratory data analysis. Depend
 In some situations, we may opt to fill in the missing data. For instance, one common method involves replacing missing values with the mean of the variable.
 
 ```{r}
-# Filling Missing Data
+# Filling Missing Data (with the average - this is an example)
 nlswork_filled <- nlswork %>%
   mutate(across(c("union"), ~ ifelse(is.na(.), mean(., na.rm = TRUE), .))) 
 
@@ -189,21 +178,9 @@ str(nlswork_no_na)
 
 ```
 
-
-```{r, echo = FALSE, results='asis'}
-    nlswork_no_na %>%
-      dplyr::select(collgrad,ttl_exp,hours) %>% 
-      stargazer(title="Shorter statistics",
-      type= "text",
-      out = "Stats.html",
-      covariate.labels = c("Collage Graduate","Experience","Hours"),
-      digits = 2, summary.stat = c("min","mean","sd","max"),
-      header = FALSE)
-```
-
 ## 7.1. Export descriptive statistics table to html, with 2 digits
 
-```{r}
+```{r, echo = FALSE, results='asis'}
 nlswork_no_na %>%
   dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
   stargazer(title="Shorter statistics",
@@ -214,7 +191,7 @@ nlswork_no_na %>%
 
 ## 7.2. Export descriptive statistics table to txt, with 3 digits
 
-```{r}
+```{r, echo = FALSE, results='asis'}
 nlswork_no_na %>%
   dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
   stargazer(title="Shorter statistics",
@@ -225,7 +202,7 @@ nlswork_no_na %>%
 
 ## 7.3. Transposing the descriptive statistics table
 
-```{r}
+```{r, echo = FALSE, results='asis'}
 nlswork_no_na %>%
   dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
   stargazer(title="Shorter statistics",
@@ -235,7 +212,7 @@ nlswork_no_na %>%
 ```
 ## 7.4. Export to pdf 
 
-```{r results='asis'}
+```{r, echo = FALSE, results='asis'}
 nlswork_no_na %>%
   dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
   stargazer(title="Shorter statistics",

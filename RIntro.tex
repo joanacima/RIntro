@@ -257,53 +257,11 @@ information:}\label{visualize-missing-information}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{n\_var\_miss}\NormalTok{(nlswork)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] 14
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(nlswork,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{age,}\AttributeTok{y=}\NormalTok{ln\_wage))}\SpecialCharTok{+}
-  \FunctionTok{geom\_point}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Warning: Removed 24 rows containing missing values (`geom_point()`).
-\end{verbatim}
-
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-9-1.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(nlswork,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{age,}\AttributeTok{y=}\NormalTok{ln\_wage))}\SpecialCharTok{+}
-  \FunctionTok{geom\_miss\_point}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-9-2.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{ggplot}\NormalTok{(nlswork,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{age,}\AttributeTok{y=}\NormalTok{ln\_wage))}\SpecialCharTok{+}
-  \FunctionTok{geom\_miss\_point}\NormalTok{() }\SpecialCharTok{+}
-  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{race)}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-9-3.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{gg\_miss\_fct}\NormalTok{(}\AttributeTok{x =}\NormalTok{ nlswork,}\AttributeTok{fct =}\NormalTok{ year)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-9-4.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-9-1.pdf}
 
 \hypertarget{alternative}{%
 \subsubsection{Alternative}\label{alternative}}
@@ -333,7 +291,7 @@ mean of the variable.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Filling Missing Data}
+\CommentTok{\# Filling Missing Data (with the average {-} this is an example)}
 \NormalTok{nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"union"}\NormalTok{), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\FunctionTok{mean}\NormalTok{(., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), .))) }
 \end{Highlighting}
@@ -454,117 +412,59 @@ data}\label{excluding-rows-with-missing-data}}
 ##   ..- attr(*, "names")= chr [1:15082] "1" "2" "4" "5" ...
 \end{verbatim}
 
-\hypertarget{shorter-statistics}{%
-\section{Shorter statistics}\label{shorter-statistics}}
-
-\hypertarget{statistic-min-mean-st.-dev.-max}{%
-\subsection{Statistic Min Mean St.~Dev.
-Max}\label{statistic-min-mean-st.-dev.-max}}
-
-Collage Graduate 0 0.19 0.39 1\\
-Experience 0.00 6.77 4.41 28.88 Hours 1 36.20 10.03 168
-------------------------------------------
-
 \hypertarget{export-descriptive-statistics-table-to-html-with-2-digits}{%
 \subsection{7.1. Export descriptive statistics table to html, with 2
 digits}\label{export-descriptive-statistics-table-to-html-with-2-digits}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{nlswork\_no\_na }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(age, collgrad, ttl\_exp, union, hours) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{stargazer}\NormalTok{(}\AttributeTok{title=}\StringTok{"Shorter statistics"}\NormalTok{,}
-            \AttributeTok{type=} \StringTok{"text"}\NormalTok{, }\AttributeTok{out =} \StringTok{"Statistics\_output.html"}\NormalTok{,}
-            \AttributeTok{digits =} \DecValTok{2}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{shorter-statistics}{%
+\section{Shorter statistics}\label{shorter-statistics}}
 
-\begin{verbatim}
-## 
-## Shorter statistics
-## ==========================================
-## Statistic   N    Mean  St. Dev. Min   Max 
-## ------------------------------------------
-## age       13,452 30.20   6.41    16   46  
-## collgrad  13,452 0.19    0.39    0     1  
-## ttl_exp   13,452 6.77    4.41   0.00 28.88
-## union     13,452 0.23    0.42    0     1  
-## hours     13,452 36.20  10.03    1    168 
-## ------------------------------------------
-\end{verbatim}
+\hypertarget{statistic-n-mean-st.-dev.-min-max}{%
+\subsection{Statistic N Mean St.~Dev. Min
+Max}\label{statistic-n-mean-st.-dev.-min-max}}
+
+age 13,452 30.20 6.41 16 46\\
+collgrad 13,452 0.19 0.39 0 1\\
+ttl\_exp 13,452 6.77 4.41 0.00 28.88 union 13,452 0.23 0.42 0 1\\
+hours 13,452 36.20 10.03 1 168
+------------------------------------------
 
 \hypertarget{export-descriptive-statistics-table-to-txt-with-3-digits}{%
 \subsection{7.2. Export descriptive statistics table to txt, with 3
 digits}\label{export-descriptive-statistics-table-to-txt-with-3-digits}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{nlswork\_no\_na }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(age, collgrad, ttl\_exp, union, hours) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{stargazer}\NormalTok{(}\AttributeTok{title=}\StringTok{"Shorter statistics"}\NormalTok{,}
-            \AttributeTok{type=} \StringTok{"text"}\NormalTok{, }\AttributeTok{out =} \StringTok{"Statistics\_output.txt"}\NormalTok{,}
-            \AttributeTok{digits =} \DecValTok{3}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{shorter-statistics-1}{%
+\section{Shorter statistics}\label{shorter-statistics-1}}
 
-\begin{verbatim}
-## 
-## Shorter statistics
-## =============================================
-## Statistic   N     Mean  St. Dev.  Min   Max  
-## ---------------------------------------------
-## age       13,452 30.203  6.414    16     46  
-## collgrad  13,452 0.189   0.391     0     1   
-## ttl_exp   13,452 6.773   4.409   0.000 28.885
-## union     13,452 0.229   0.420     0     1   
-## hours     13,452 36.199  10.034    1    168  
-## ---------------------------------------------
-\end{verbatim}
+\hypertarget{statistic-n-mean-st.-dev.-min-max-1}{%
+\subsection{Statistic N Mean St.~Dev. Min
+Max}\label{statistic-n-mean-st.-dev.-min-max-1}}
+
+age 13,452 30.203 6.414 16 46\\
+collgrad 13,452 0.189 0.391 0 1\\
+ttl\_exp 13,452 6.773 4.409 0.000 28.885 union 13,452 0.229 0.420 0 1\\
+hours 13,452 36.199 10.034 1 168\\
+---------------------------------------------
 
 \hypertarget{transposing-the-descriptive-statistics-table}{%
 \subsection{7.3. Transposing the descriptive statistics
 table}\label{transposing-the-descriptive-statistics-table}}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{nlswork\_no\_na }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(age, collgrad, ttl\_exp, union, hours) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{stargazer}\NormalTok{(}\AttributeTok{title=}\StringTok{"Shorter statistics"}\NormalTok{,}
-            \AttributeTok{type=} \StringTok{"text"}\NormalTok{, }\AttributeTok{out =} \StringTok{"Statistics\_output2.txt"}\NormalTok{,}
-            \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }\AttributeTok{flip=}\ConstantTok{TRUE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+\hypertarget{shorter-statistics-2}{%
+\section{Shorter statistics}\label{shorter-statistics-2}}
 
-\begin{verbatim}
-## 
-## Shorter statistics
-## ===============================================
-## Statistic  age   collgrad ttl_exp union  hours 
-## -----------------------------------------------
-## N         13,452  13,452  13,452  13,452 13,452
-## Mean      30.203  0.189    6.773  0.229  36.199
-## St. Dev.  6.414   0.391    4.409  0.420  10.034
-## Min         16      0      0.000    0      1   
-## Max         46      1     28.885    1     168  
-## -----------------------------------------------
-\end{verbatim}
+\hypertarget{statistic-age-collgrad-ttl_exp-union-hours}{%
+\subsection{Statistic age collgrad ttl\_exp union
+hours}\label{statistic-age-collgrad-ttl_exp-union-hours}}
 
-\hypertarget{export-to-pdf}{%
-\subsection{7.4. Export to pdf}\label{export-to-pdf}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{nlswork\_no\_na }\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(age, collgrad, ttl\_exp, union, hours) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{stargazer}\NormalTok{(}\AttributeTok{title=}\StringTok{"Shorter statistics"}\NormalTok{,}
-            \AttributeTok{type=} \StringTok{"latex"}\NormalTok{,}
-            \AttributeTok{digits =} \DecValTok{3}\NormalTok{, }\AttributeTok{flip=}\ConstantTok{TRUE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+N 13,452 13,452 13,452 13,452 13,452 Mean 30.203 0.189 6.773 0.229
+36.199 St.~Dev. 6.414 0.391 4.409 0.420 10.034 Min 16 0 0.000 0 1\\
+Max 46 1 28.885 1 168\\
+----------------------------------------------- \#\# 7.4. Export to pdf
 
 \% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy
 Institute. E-mail: marek.hlavac at gmail.com \% Date and time: qua, out
-11, 2023 - 12:26:27
+11, 2023 - 16:44:25
 
 \begin{table}[!htbp] \centering 
   \caption{Shorter statistics} 
@@ -595,7 +495,7 @@ Variables}\label{relationships-between-continuous-variables}}
 ## `geom_smooth()` using formula = 'y ~ x'
 \end{verbatim}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-19-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-18-1.pdf}
 
 \hypertarget{categorical-variable}{%
 \subsection{8.2. Categorical variable}\label{categorical-variable}}
@@ -608,7 +508,7 @@ Variables}\label{relationships-between-continuous-variables}}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-20-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-19-1.pdf}
 
 \hypertarget{continuous-variable-distributions}{%
 \subsection{8.3. Continuous Variable
@@ -621,7 +521,7 @@ Distributions}\label{continuous-variable-distributions}}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-20-1.pdf}
 
 \hypertarget{categorical-and-continuous-variables}{%
 \subsection{8.4 Categorical and continuous
@@ -635,7 +535,7 @@ variables}\label{categorical-and-continuous-variables}}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-22-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-21-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -651,7 +551,7 @@ variables}\label{categorical-and-continuous-variables}}
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-23-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-22-1.pdf}
 
 \hypertarget{correlation}{%
 \section{9. Correlation}\label{correlation}}
@@ -662,7 +562,7 @@ variables}\label{categorical-and-continuous-variables}}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-24-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-23-1.pdf}
 
 \hypertarget{assessment}{%
 \section{10. Assessment}\label{assessment}}
