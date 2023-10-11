@@ -1,0 +1,370 @@
+---
+title: "(Fast) Introduction to R"
+author: "Joana Cima"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  pdf_document:
+    keep_tex: yes
+header-includes:
+  - "\\usepackage{hyperref}"
+  - "\\hypersetup{colorlinks=true, linkcolor=red, urlcolor=blue}"
+subtitle: "Jump into a notebook"
+---
+
+# My beamer
+
+> BlaBlaBla
+
+<!-- ## Setup -->
+
+```{r setup, echo=FALSE, include=FALSE}
+library(knitr) #to produce dynamic reports, allowing the embedding of R code, its results, and text into a single document
+# knitr::opts_chunk$set(echo = TRUE)
+library(haven) #to import and export data in SPSS, Stata, and SAS formats, enhancing interoperability with other statistical software
+library(rmarkdown) #is used to convert files that contain text and R code into documents of various formats, such as HTML, PDF, and Word
+library(writexl) #to export tabular data from R to Excel files
+library(Hmisc) #provides a collection of functions for data manipulation, statistical analysis, and graph creation, facilitating various stages of the analytical process
+library(naniar) #exploring and visualizing missing data in the dataset
+library(here)
+
+rm(list = ls())
+here()
+getwd()
+
+# Define working directory
+setwd("C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
+
+```
+
+<!-- ## Load your libraries -->
+
+```{r Libraries & Data, echo=FALSE,results='hide',message=FALSE}
+library(tidyverse) #provides a set of tools for data manipulation, visualization, and modeling
+library(readxl) # allows us to read Excel files (.xls or .xlsx) directly into R. 
+library(visdat) #to explore our dataset through visualizations.
+library(stargazer) #to produce beautiful LaTeX or HTML tables and descriptive statistics from R statistical output
+library(GGally) #to extend ggplot2 functionality to create a scatterplot matrix
+
+```
+# Outline
+
+1. Motivation
+2. Data
+3. Conceptual discussion
+
+
+# 3. Import data (from an excel file)
+
+## Load your data using point and click
+
+![Point and click](importdataset.png){width=31%}
+
+which corresponds to the following code
+
+```{r}
+nlswork <- as.data.frame(read_excel("nlswork.xlsx"))
+# nlswork <- read_dta("nlswork.dta") # in case you have a Stata data source
+
+```
+
+
+# 4. Data manipulation -- check the pipe operator, %>%
+
+
+## 4.1. Select a subset of variables
+
+```{r}
+nlswork_s<- nlswork %>% 
+  select(idcode, ln_wage) 
+
+```
+
+## 4.2. Rename variables
+
+```{r}
+nlswork_r <- nlswork %>% 
+  rename(cae = ind_code)
+
+```
+
+## 4.3. Filter a subset of observations
+
+```{r}
+nlswork_f<- nlswork %>% 
+  filter(age > 40) 
+
+```
+
+## 4.4. Mutate: create variables
+
+```{r}
+ nlswork_m <- nlswork %>% 
+  mutate(ln_asd=log(age))
+
+```
+
+## 4.5. Manipulate the data in a single sequence
+
+```{r}
+nlswork1<- nlswork %>% 
+  rename(cae = ind_code) %>%
+  select(idcode, ln_wage, age) %>% 
+  filter(age > 40) %>%
+  mutate(age2=age^2)
+
+```
+
+# 5. Visualize missing information:
+
+<!-- # https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.htmlhttps://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html -->
+
+```{r}
+
+vis_miss(nlswork)
+
+```
+
+```{r}
+gg_miss_var(nlswork) + labs(y = "Total missing values for each variable")
+gg_miss_upset(nlswork)
+
+```
+
+```{r}
+n_var_miss(nlswork)
+
+ggplot(nlswork,aes(x=age,y=ln_wage))+
+  geom_point()
+
+ggplot(nlswork,aes(x=age,y=ln_wage))+
+  geom_miss_point()
+
+ggplot(nlswork,aes(x=age,y=ln_wage))+
+  geom_miss_point() +
+  facet_wrap(~race)
+
+gg_miss_fct(x = nlswork,fct = year)
+
+```
+
+
+### Alternative
+
+```{r}
+vis_dat(nlswork)
+
+```
+
+# 6. Handling Missing Data
+
+Handling missing data is a crucial step in the exploratory data analysis. Depending on the nature and mechanism of the missingness, we might decide to impute missing values or to exclude the observations with missing data.
+
+## 6.1 Filling Missing Data 
+
+In some situations, we may opt to fill in the missing data. For instance, one common method involves replacing missing values with the mean of the variable.
+
+```{r}
+# Filling Missing Data
+nlswork_filled <- nlswork %>%
+  mutate(across(c("union"), ~ ifelse(is.na(.), mean(., na.rm = TRUE), .))) 
+
+```
+
+## 6.2 Excluding rows with missing data
+```{r}
+# Or excluding rows with missing data
+
+nlswork_no_na <- na.omit(nlswork)
+
+```
+
+# 7. Descriptive statistics
+
+```{r}
+summary(nlswork_no_na) 
+
+summary(nlswork_no_na[,c("grade","union","ln_wage")]) 
+
+str(nlswork_no_na) 
+
+```
+
+
+```{r, echo = FALSE, results='asis'}
+    nlswork_no_na %>%
+      dplyr::select(collgrad,ttl_exp,hours) %>% 
+      stargazer(title="Shorter statistics",
+      type= "text",
+      out = "Stats.html",
+      covariate.labels = c("Collage Graduate","Experience","Hours"),
+      digits = 2, summary.stat = c("min","mean","sd","max"),
+      header = FALSE)
+```
+
+## 7.1. Export descriptive statistics table to html, with 2 digits
+
+```{r}
+nlswork_no_na %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="Shorter statistics",
+            type= "text", out = "Statistics_output.html",
+            digits = 2)
+
+```
+
+## 7.2. Export descriptive statistics table to txt, with 3 digits
+
+```{r}
+nlswork_no_na %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="Shorter statistics",
+            type= "text", out = "Statistics_output.txt",
+            digits = 3)
+
+```
+
+## 7.3. Transposing the descriptive statistics table
+
+```{r}
+nlswork_no_na %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="Shorter statistics",
+            type= "text", out = "Statistics_output2.txt",
+            digits = 3, flip=TRUE)
+
+```
+## 7.4. Export to pdf 
+
+```{r results='asis'}
+nlswork_no_na %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="Shorter statistics",
+            type= "latex",
+            digits = 3, flip=TRUE)
+
+```
+
+
+# 8. Visualisation to explore your data
+
+## 8.1. Relationships Between Continuous Variables
+
+```{r echo=FALSE, warning=FALSE, results='asis'}
+nlswork_no_na %>% 
+      ggplot(aes(ttl_exp,ln_wage)) +
+      labs(title = "Ln Wage vs. Experience") +
+      ylab("Ln Wage") +
+      xlab("Experience") +
+      geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue")
+
+```
+
+## 8.2. Categorical variable
+```{r}
+ggplot(data = nlswork_no_na) +
+  geom_bar(mapping=aes(x=as.factor(collgrad))) +
+  xlab("College graduate (1=Yes)")
+
+```
+
+  
+## 8.3. Continuous Variable Distributions
+
+```{r}
+ggplot(data = nlswork_no_na) +
+  geom_histogram(mapping = aes(x = wks_work), binwidth = 0.5)
+
+```
+
+## 8.4 Categorical and continuous variables
+
+```{r}
+nlswork_no_na %>% ggplot(aes(x=as.factor(collgrad), y=ln_wage)) +
+  geom_boxplot(fill="slateblue", alpha=0.2) + 
+  xlab("College graduate (1=Yes)")
+```
+
+```{r,warning=FALSE}
+nlswork_no_na %>% ggplot(mapping = aes(x = ln_wage, y = ..density..)) +
+    xlab("ln(wage)") +
+    ylab("Density") +
+    geom_freqpoly(mapping = aes(colour = factor(collgrad, labels=c("No", "Yes")))) +
+  labs(color ="College degree")
+```
+
+# 9. Correlation
+```{r,warning=FALSE}
+ggpairs(nlswork_no_na[, c("age","ttl_exp","hours")], title="Correlogram with ggpairs()")
+```
+
+
+# 10. Assessment
+
+## Problem 1: Data Importing
+Import the "card" dataset.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 2: Visualizing Missing Data
+Graphically show which variables have the most missing values.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 3: Handling Missing Data
+Adopt a strategy to handle the missing values.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 4: Descriptive Statistics after Missing Data Handling
+Present statistics of the dataset that has been treated for missing values.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 5: Relationship Visualization
+Graphically show the relationship between age and salary.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 6: Age Distribution
+Display the distribution of age.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 7: Correlation
+What is the correlation value between age and salary?
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+
+
+
+
