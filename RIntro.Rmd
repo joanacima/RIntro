@@ -38,7 +38,7 @@ setwd("C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
 
 <!-- ## Load your libraries -->
 
-```{r Libraries & Data, echo=FALSE,results='hide',message=FALSE}
+```{r Libraries & Data, echo=FALSE,results='hide',message=FALSE , include=FALSE}
 library(tidyverse) #provides a set of tools for data manipulation, visualization, and modeling
 library(readxl) # allows us to read Excel files (.xls or .xlsx) directly into R. 
 library(visdat) #to explore our dataset through visualizations.
@@ -61,7 +61,7 @@ library(GGally) #to extend ggplot2 functionality to create a scatterplot matrix
 
 which corresponds to the following code
 
-```{r}
+```{r }
 nlswork <- as.data.frame(read_excel("nlswork.xlsx"))
 # nlswork <- read_dta("nlswork.dta") # in case you have a Stata data source
 
@@ -73,7 +73,7 @@ nlswork <- as.data.frame(read_excel("nlswork.xlsx"))
 
 ## 4.1. Select a subset of variables
 
-```{r}
+```{r }
 nlswork_s<- nlswork %>% 
   select(idcode, ln_wage) 
 
@@ -81,7 +81,7 @@ nlswork_s<- nlswork %>%
 
 ## 4.2. Rename variables
 
-```{r}
+```{r }
 nlswork_r <- nlswork %>% 
   rename(cae = ind_code)
 
@@ -89,7 +89,7 @@ nlswork_r <- nlswork %>%
 
 ## 4.3. Filter a subset of observations
 
-```{r}
+```{r }
 nlswork_f<- nlswork %>% 
   filter(age > 40) 
 
@@ -97,7 +97,7 @@ nlswork_f<- nlswork %>%
 
 ## 4.4. Mutate: create variables
 
-```{r}
+```{r }
  nlswork_m <- nlswork %>% 
   mutate(ln_asd=log(age))
 
@@ -118,13 +118,13 @@ nlswork1<- nlswork %>%
 
 <!-- # https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.htmlhttps://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html -->
 
-```{r}
+```{r }
 
 vis_miss(nlswork)
 
 ```
 
-```{r}
+```{r }
 gg_miss_var(nlswork) + labs(y = "Total missing values for each variable")
 gg_miss_upset(nlswork)
 
@@ -139,7 +139,7 @@ gg_miss_fct(x = nlswork,fct = year)
 
 ### Alternative
 
-```{r}
+```{r }
 vis_dat(nlswork)
 
 ```
@@ -152,7 +152,7 @@ Handling missing data is a crucial step in the exploratory data analysis. Depend
 
 In some situations, we may opt to fill in the missing data. For instance, one common method involves replacing missing values with the mean of the variable.
 
-```{r}
+```{r }
 # Filling Missing Data (with the average - this is an example)
 nlswork_filled <- nlswork %>%
   mutate(across(c("union"), ~ ifelse(is.na(.), mean(., na.rm = TRUE), .))) 
@@ -160,7 +160,7 @@ nlswork_filled <- nlswork %>%
 ```
 
 ## 6.2 Excluding rows with missing data
-```{r}
+```{r }
 # Or excluding rows with missing data
 
 nlswork_no_na <- na.omit(nlswork)
@@ -169,7 +169,7 @@ nlswork_no_na <- na.omit(nlswork)
 
 # 7. Descriptive statistics
 
-```{r}
+```{r }
 summary(nlswork_no_na) 
 
 summary(nlswork_no_na[,c("grade","union","ln_wage")]) 
@@ -210,9 +210,10 @@ nlswork_no_na %>%
             digits = 3, flip=TRUE)
 
 ```
+
 ## 7.4. Export to pdf 
 
-```{r, echo = FALSE, results='asis'}
+```{r, echo = FALSE, results='asis', warning=FALSE}
 nlswork_no_na %>%
   dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
   stargazer(title="Shorter statistics",
@@ -248,7 +249,7 @@ ggplot(data = nlswork_no_na) +
   
 ## 8.3. Continuous Variable Distributions
 
-```{r}
+```{r include=FALSE}
 ggplot(data = nlswork_no_na) +
   geom_histogram(mapping = aes(x = wks_work), binwidth = 0.5)
 
