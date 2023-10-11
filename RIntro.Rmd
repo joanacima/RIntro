@@ -18,6 +18,10 @@ subtitle: "Jump into a notebook"
 <!-- ## Setup -->
 
 ```{r setup, echo=FALSE, include=FALSE}
+
+#What is a library? A library refers to a bundle of code, which includes various functions and datasets, that enables you to perform specific tasks that are not included in the base R functions.
+
+
 library(knitr) #to produce dynamic reports, allowing the embedding of R code, its results, and text into a single document
 # knitr::opts_chunk$set(echo = TRUE)
 library(haven) #to import and export data in SPSS, Stata, and SAS formats, enhancing interoperability with other statistical software
@@ -320,7 +324,7 @@ Graphically show which variables have the most missing values.
 ```
 
 ## Problem 3: Handling Missing Data
-Adopt a strategy to handle the missing values.
+Adopt a strategy to handle the missing values.How many observations were lost?
 
 ```{r,warning=FALSE}
 #BEGIN SOLUTION
@@ -338,7 +342,7 @@ Present statistics of the dataset that has been treated for missing values.
 ```
 
 ## Problem 5: Relationship Visualization
-Graphically show the relationship between age and salary.
+Graphically show the relationship between age and salary.Does the relationship between the variables make sense?
 
 ```{r,warning=FALSE}
 #BEGIN SOLUTION
@@ -365,6 +369,13 @@ What is the correlation value between age and salary?
 ```
 
 
+## Problem 8: 
+In the nlswork_no_na dataset, can you identify any patterns or trends in the data related to unionized workers and their salaries?
 
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
 
 
