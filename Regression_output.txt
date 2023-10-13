@@ -1,0 +1,20 @@
+
+===============================================
+                                               
+-----------------------------------------------
+age                    0.0068***               
+                        (0.0006)               
+                                               
+collgrad               0.3833***               
+                        (0.0095)               
+                                               
+union                  0.2168***               
+                        (0.0083)               
+                                               
+Constant               1.3876***               
+                        (0.0170)               
+                                               
+===============================================
+Notes:   ***Significant at the 1 percent level.
+         **Significant at the 5 percent level. 
+         *Significant at the 10 percent level. 

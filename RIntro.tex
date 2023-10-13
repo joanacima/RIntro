@@ -117,7 +117,7 @@
 \makeatother
 \subtitle{Jump into a notebook}
 \author{Joana Cima}
-\date{11 outubro 2023}
+\date{13 outubro 2023}
 
 \begin{document}
 \maketitle
@@ -291,9 +291,32 @@ mean of the variable.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Filling Missing Data (with the average {-} this is an example)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\CommentTok{\# Filling Missing Data }
+
+\DocumentationTok{\#\# (with the average {-} this is an example {-} it does not make sense in this case)}
 \NormalTok{nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"union"}\NormalTok{), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\FunctionTok{mean}\NormalTok{(., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), .))) }
+
+\DocumentationTok{\#\# (with the mode)}
+    \DocumentationTok{\#\#\# Create a function to compute mode}
+\NormalTok{calc\_mode }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{  tbl }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(x, }\AttributeTok{useNA =} \StringTok{"no"}\NormalTok{)  }\CommentTok{\# ignora NAs}
+\NormalTok{  max\_freq }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(tbl)}
+\NormalTok{  mode\_val }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{names}\NormalTok{(tbl)[tbl }\SpecialCharTok{==}\NormalTok{ max\_freq])}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(mode\_val) }\SpecialCharTok{\textgreater{}} \DecValTok{1}\NormalTok{) \{}
+    \FunctionTok{warning}\NormalTok{(}\StringTok{"Existem múltiplas modas. Selecionando a menor."}\NormalTok{)}
+\NormalTok{    mode\_val }\OtherTok{\textless{}{-}} \FunctionTok{min}\NormalTok{(mode\_val)}
+\NormalTok{  \}}
+  \FunctionTok{return}\NormalTok{(mode\_val)}
+\NormalTok{\}}
+
+    \DocumentationTok{\#\#\# compute the mode}
+\NormalTok{mode\_union }\OtherTok{\textless{}{-}} \FunctionTok{calc\_mode}\NormalTok{(nlswork}\SpecialCharTok{$}\NormalTok{union)}
+
+    \DocumentationTok{\#\#\# Replace NA by mode in column union}
+\NormalTok{  nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{union =} \FunctionTok{if\_else}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(union), mode\_union, union))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -466,8 +489,8 @@ Max 46 1 28.885 1 168\\
 \subsection{7.4. Export to pdf}\label{export-to-pdf}}
 
 \% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy
-Institute. E-mail: marek.hlavac at gmail.com \% Date and time: qua, out
-11, 2023 - 20:10:10
+Institute. E-mail: marek.hlavac at gmail.com \% Date and time: sex, out
+13, 2023 - 11:00:24
 
 \begin{table}[!htbp] \centering 
   \caption{Shorter statistics} 

@@ -1,0 +1,957 @@
+---
+title: 'R Notebook: PEA, 2022/2023'
+author: Miguel Portela, Bruno Fernandes, Diogo Ferreira e Joana Cima
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    df_print: paged
+  bookdown::word_document2:
+    number_sections: yes
+  bookdown::pdf_document2:
+    number_sections: yes
+  bookdown::html_document2:
+    number_sections: yes
+  pdf_document: default
+bibliography: references.bib
+csl: european-economic-review.csl
+fontsize: 12pt
+link-citations: yes
+---
+
+
+```{r, setup, echo=FALSE, include=FALSE}
+  gc()
+  rm(list = ls())
+  knitr::opts_knit$set(root.dir = "C:\\Users\\Joana Cima\\Documents\\GitHub\\projeto_economia_aplicada\\PEA_models_2022_2023")
+  library(tidyverse)
+  library(haven)
+  library(readxl)
+  library(writexl)
+  # library(Hmisc)
+  library(stargazer)
+  library(visdat)
+  library(naniar)
+  library(here)
+  library(summarytools)
+  library(robustbase)
+  library(lmtest)
+  library(sandwich)
+  library(car)
+  library(broom)
+  library(forecast)
+  library(margins)
+  library(tinytex)
+```
+
+# Introduction
+
+According to @romer1990growthinov ...
+
+
+```{r include=FALSE}
+# 2. Define working directory
+setwd("C:\\Users\\Joana Cima\\Documents\\GitHub\\projeto_economia_aplicada\\PEA_models_2022_2023")
+```
+
+
+```{r include=FALSE}
+
+# -- list the current directory
+getwd()
+```
+
+```{r include=FALSE}
+# 3. Import data (from an excel file)
+nlswork <- as.data.frame(read_excel("nlswork.xlsx"))
+
+nlswork2 <- read_dta("nlswork_v2.dta")
+```
+
+
+```{r include=FALSE}
+# 3.1. Import it as a DataFrame
+nlswork <- as.data.frame(nlswork)
+df <- as.data.frame(read_excel("nlswork.xlsx"))
+```
+
+
+```{r include=FALSE}
+# 4. Data manipulation -- check the pipe operator, %>%
+# 4.1. Select a subset of variables
+nlswork_s<- nlswork %>% 
+  select(idcode, ln_wage) 
+```
+
+
+```{r include=FALSE}
+# 4.2. Rename variables
+nlswork_r <- nlswork %>% 
+  rename(cae = ind_code)
+```
+
+
+```{r include=FALSE}
+# 4.3. Filter a subset of observations
+nlswork_f<- nlswork %>% 
+  filter(age > 40) 
+```
+
+
+```{r include=FALSE}
+# 4.4. Mutate: create variables
+nlswork_m <- nlswork %>% mutate(age2 = age*2)
+```
+
+
+```{r include=FALSE}
+# 4.5. Manipulate the data in a single sequence
+nlswork1<- nlswork %>% 
+  rename(cae = ind_code) %>%
+  select(idcode, ln_wage, age) %>% 
+  filter(age > 40) %>%
+  mutate(age2=age^2)
+```
+
+
+# Descriptive statistics
+
+```{r include=FALSE}
+df %>% 
+  count()
+```
+
+
+```{r include=FALSE}
+summary(df)
+```
+
+
+```{r include=FALSE}
+table(df$race, df$collgrad)
+```
+
+
+```{r include=FALSE}
+str(df)
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 5.1. Export descriptive statistics table to html, with 2 digits
+nlswork %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="",
+            type= "text", out = "Statistics_output.html",
+            digits = 2)
+```
+
+
+```{r include=FALSE}
+# 5.2. Export descriptive statistics table to txt, with 3 digits
+nlswork %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="Shorter statistics",
+            type= "text", out = "Statistics_output.txt",
+            digits = 3)
+```
+
+
+```{r include=FALSE}
+# 5.3. Transposing the descriptive statistics table
+nlswork %>%
+  dplyr::select(age, collgrad, ttl_exp, union, hours) %>% 
+  stargazer(title="Shorter statistics",
+            type= "text", out = "Statistics_output2.txt",
+            digits = 3, flip=TRUE)
+```
+
+
+```{r include=FALSE}
+# 5.4. Summarytools - packages
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# Frequency Tables
+freq(nlswork$collgrad, plain.ascii = FALSE, style = "rmarkdown")
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# Cross-Tabulations
+
+  # Crie a tabela de contingência com a função table()
+tab <- table(nlswork$collgrad, nlswork$race)
+
+  # Calcule as proporções
+prop.table(tab, margin = 1) # proporções por linha
+prop.table(tab, margin = 2) # proporções por coluna
+
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# Data Frame Summaries
+view(dfSummary(nlswork))
+```
+
+```{r, include=FALSE}
+# Grouped Statistics: stby()
+
+(nlswork_stats_by_race <- stby(data      = nlswork, 
+                               INDICES   = nlswork$race, 
+                               FUN       = descr, 
+                               stats     = "common", 
+                               transpose = FALSE))
+```
+
+
+```{r, include=FALSE}
+# Grouped Statistics: group_by()
+library(dplyr)
+nlswork %>% 
+  group_by(race) %>% 
+  descr(stats = "fivenum")
+```
+
+
+## Graphical analysis of missing values
+
+Exemplo de texto.
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 6. Visualize missing information:
+# https://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.htmlhttps://cran.r-project.org/web/packages/naniar/vignettes/naniar-visualisation.html
+vis_miss(nlswork)
+
+
+```
+
+
+Exemplo de texto.
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+gg_miss_var(nlswork) + labs(y = "Total missing values for each variable")
+ggsave("miss.png")
+```
+
+
+## Graphical analysis of missing information
+
+Exemplo de texto.
+
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+gg_miss_upset(nlswork)
+```
+
+
+
+```{r include=FALSE, warning=FALSE}
+n_var_miss(nlswork)
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+ggplot(nlswork,aes(x=age,y=ln_wage))+
+  geom_point()
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+ggplot(nlswork,aes(x=age,y=ln_wage))+
+  geom_miss_point()
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+ggplot(nlswork,aes(x=age,y=ln_wage))+
+  geom_miss_point() +
+  facet_wrap(~race)
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+gg_miss_fct(x = nlswork,fct = year)
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# Alternative
+vis_dat(nlswork)
+```
+
+## Graphical analysis of frequencies
+
+Exemplo de texto.
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 7. Visualisation to explore your data
+# 7.1. Categorical variable
+ggplot(data = nlswork) +
+  geom_bar(mapping=aes(x=as.factor(collgrad))) +
+  xlab("College graduate (1=Yes)")
+```
+
+```{r include=FALSE, warning=FALSE}
+nlswork %>% 
+  count(collgrad)
+```
+
+```{r, fig.cap="incluir titulo", echo=FALSE, include=TRUE, warning=FALSE}
+# 7.2. Continuous variable
+ggplot(data = nlswork) +
+  geom_histogram(mapping = aes(x = wks_work), binwidth = 0.5) 
+```
+
+## Graphical analysis of relationship between variables
+
+Exemplo de texto.
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 7.3 Categorical and continuous variables
+ggplot(data = nlswork, aes(x=as.factor(collgrad), y=ln_wage)) +
+  geom_boxplot(fill="slateblue", alpha=0.2) + 
+  xlab("College graduate (1=Yes)")
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+ggplot(nlswork,
+    mapping = aes(x = ln_wage, y = ..density..)) +
+    xlab("ln(wage)") +
+    ylab("Density") +
+    geom_freqpoly( mapping = aes(colour = factor(collgrad, labels=c("No", "Yes")))) + 
+    labs(color ="College degree")
+```
+
+```{r include=FALSE, warning=FALSE}
+# 7.4 Continuous variables over time with categorical variables
+df_collapse <- nlswork %>% group_by(year, c_city) %>%
+  summarize (mean_age=mean(age, na.rm=TRUE))
+```
+
+
+```{r include=FALSE, warning=FALSE}
+df_filter <- df_collapse %>%
+  filter(c_city==0 | c_city==1)
+```
+
+```{r include=FALSE, warning=FALSE}
+df_filter$c_city <- factor(df_filter$c_city,
+                           levels = c("0" , "1"),
+                           labels = c("No central city", "Central city"))
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# Plot
+df_filter %>%
+  ggplot(aes(x=year, y=mean_age, group= c_city, color= c_city)) +
+  labs(color = "Type of city:")+
+  geom_line()
+```
+
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 8. ADDITIONAL EXAMPLES - Read data from the Web; save it in CSV, excel and Stata formats (EXEMPLO)
+# 8.1. Read data from the Web
+df_exemplo <- as.data.frame(read_dta(url("http://www.stata-press.com/data/r17/nlswork.dta")))
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 8.2. Save it in CSV, excel and Stata formats
+write_csv(df_exemplo,"nlswork_web.csv")
+
+write_xlsx(df_exemplo,"nlswork_web.xlsx")
+
+write_dta(df_exemplo,"nlswork_web.dta")
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# 8.3. Read the local data file
+nlswork_web <- read.csv("nlswork_web.csv")
+```
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+# nlswork_web <- read_excel("nlswork_web.xlsx")
+# nlswork_web <- read_stata("nlswork_web.dta")
+```
+
+## Regression analysis
+
+Exemplo de texto.
+
+*Our model* can now be **defined** as:
+
+\begin{equation}
+lnwage_{it} = \beta_0 + \beta_1 Grade_{i} + \beta_2 Experience_{it} +  \beta_3 Experience^{2}_{it} + \varepsilon_{it}
+\end{equation}
+
+
+
+  <!-- # math functions -->
+  
+```{r, include=FALSE}
+  nlswork <- nlswork %>% 
+    mutate(exper_sq = ttl_exp^2)
+
+```
+    
+
+# Regression analysis: Ordinary Least Squares (OLS)
+
+
+
+<!-- # Create additional variables -->
+
+```{r,echo=FALSE,include=FALSE}
+      df_ols <- nlswork %>% 
+        mutate(age_sq = age^2,tenure_sq = tenure^2, experience = ttl_exp,
+               experience_sq = experience^2)
+
+```
+      
+```{r include=FALSE}
+# Model 1
+    ols1 <- lm(data = df_ols, ln_wage ~ grade)
+        summary(ols1)
+
+```
+
+
+```{r include=FALSE}
+# Model 2
+    ols2 <- lm(data = df_ols, ln_wage ~ grade + 
+                 experience + experience_sq)
+      summary(ols2)
+betas <-coef(ols2)
+r2 <- summary(ols2)$r.squared
+```      
+      
+
+Exemplo de texto.
+
+
+
+
+
+## Our regression Table
+
+Exemplo de texto.
+
+```{r Regressions, echo=FALSE, warning=FALSE, results='asis'}
+      stargazer(ols1,ols2,title = "Regression analysis", 
+                model.numbers = FALSE,
+                column.labels = c("Model (1)","Model (2)"),
+                label = "regressions",
+                table.placement = "!ht",
+                notes.append = TRUE,
+                notes.align="l",
+                notes="Standard errors in parentheses.",
+                header = FALSE,
+                no.space = TRUE,
+                covariate.labels = c("Grade","Experience","Experienced sqrd."),
+                omit = c("Constant"),
+                omit.stat = c("adj.rsq","f","ser"),
+                digits = 3,
+                digits.extra = 6,
+                omit.yes.no = c("Constant",""),
+                dep.var.caption="",
+                dep.var.labels.include = FALSE,
+                type = "html",
+                style = "qje",
+                out = "Regression_output.html")
+
+```
+
+Here we discuss the results of the estimations, including interpretation and hypothesis testing.
+
+The estimated return to *Grade* is `r round(betas[2]*100,3)`\%. The $R^2$ is `r round(r2,2)`. However, when using Model (1) the return is `r round(coef(ols1)[2]*100,1)`, while the quality of the adjustment is `r round(summary(ols1)$r.squared,1)`.
+
+We can write the estimated equation as
+
+$$\hat{y_it}=`r round(betas[1],1)` + `r round(betas[2],2)`\times Grade_i + `r round(betas[3],2)`\times experience_{it} + `r round(betas[4],2)`\times experience^{2}_{it}$$
+
+\begin{equation}
+\frac{\partial lnwage_{it}}{\partial Grade_{i}} = \beta_1
+\end{equation}
+
+We will test the following hypothesis:
+
+$H_0: \beta_1 = 0$
+
+$H_1: \beta_1 \neq 0$
+
+The joint significance test can be defined as
+
+$$H_0: \beta_2 = \beta_3 = 0$$
+
+$$H_1: H_0 \quad is \quad false $$
+
+
+### HYPOTHESIS TESTING: automatic command
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+    
+      linearHypothesis(ols1,c("grade=0"))
+
+```
+
+
+Exemplo de texto.
+
+<!-- Open the HTML file and copy/paste to the word file -->
+
+### Additional quality measures: AIC & BIC
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+    
+      AIC(ols1)
+      BIC(ols1)
+    
+      AIC(ols2)
+      BIC(ols2)
+
+```
+
+
+### COLINEARITY: VIF
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+    
+      car::vif(ols2)
+
+```
+
+VIF > 10 usually indicates multicollinearity problems (Wooldrige; Verbeek)
+
+### HETEROSKEDASTICITY
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+      
+      ols3 <- lm(ln_wage ~ hours,data=df_ols,na.action = na.exclude)
+      df_ols$residuals <- residuals(ols3)
+        plot(df_ols$hours,df_ols$residuals)
+      
+        df_ols <- df_ols %>% 
+          mutate(residuals_sq = residuals^2)
+        
+        # nlswork$residuals_sq <- residuals(mm4)^2
+        
+        bp <- summary(lm(residuals_sq ~ hours,data=df_ols,na.action = na.exclude))
+        
+          bp$r.squared*nrow(as.data.frame(bp$residuals))
+
+```
+
+### Breusch-Pagan test
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+          bptest(ols3)
+
+```
+
+### White test
+
+```{r, echo=FALSE, message=FALSE,include=TRUE, warning=FALSE}
+          bptest(ols3,~ hours + I(hours^2),data=df_ols)
+
+```
+
+### Robust estimation
+
+```{r Specification issues, echo=FALSE, warning=FALSE, results='asis'}
+        r1ols3 <- coeftest(ols3,vcov =vcovHC(ols3,type = "HC1"))   # HC1 gives us the White standard errors
+        r2ols3 <- coeftest(ols3,vcov =sandwich)
+        stargazer(ols3,r1ols3,r2ols3,
+                  digits = 4,
+                  digits.extra = 1,
+                style = "qje",
+                type = "html",
+                notes.align = "l",
+                out = "Regression_output.html")
+
+```
+
+
+# Coefficient interpretation with a full model
+
+\begin{equation}
+lnwage_{it} = \beta_0 + \beta_1 black_{i} + \beta_2 logtenure_{it} +  \beta_3 age_{it} +  \beta_4 age^{2}_{it} +  \beta_5 union_{it} + \beta_6 sharecollgrade_{it} + \beta_7 black_{i}*union_{it} + \varepsilon_{it}
+\end{equation}
+
+        
+```{r echo=FALSE, include=FALSE}
+# Model 1
+library(plm)      
+    pols <- plm(data = nlswork2, ln_wage ~ black + logtenure + age + age2 + union +
+              share_collgrad + black*union, model="pooling", index=c("idcode", "year"))
+
+summary(pols)
+betas_pols<-coef(pols)
+    
+```
+```{r echo=FALSE, include=TRUE, warning=FALSE, results='asis'}
+
+stargazer(pols,
+                style = "qje",
+                column.labels = c("Model (1)"),
+                notes="Standard errors in parentheses.",
+                header = FALSE,
+                omit = c("Constant"),
+                omit.stat = c("adj.rsq","f","ser"),
+                digits = 3,
+                digits.extra = 4,
+                omit.yes.no = c("Constant",""),
+                dep.var.caption="",
+                dep.var.labels.include = FALSE,
+                type = "html",
+                out = "Regression_output1.html")
+
+
+```
+Model interpretation:
+
+Starting with the dummy variables, setting "black" = 0 and "union"=0 corresponds to the base group of non-black and non-unionized, respectively. Thus, non-unionized "black" workers have, on average, *ceteris paribus*, a `r abs(round(betas_pols[2]*100,3))`\% lower wage when compared to the base group. The results also show that unionized “black” workers have, on average, *ceteris paribus*, a `r round((betas_pols[6]+betas_pols[8])*100,3)`\% higher wage than non-unionized "black" workers.
+When tenure increases by 1%, on average, with everything else constant, wages increases by `r round((betas_pols[3]),3)`\%. An additional year is associated, with a wage increase in `r round((betas_pols[4]+(2*betas_pols[5]*mean(nlswork2$age, na.rm=TRUE)))*100,3)`\%, with everything else constant. To conclude, since the share_collgrade is a ratio that takes values ranging between 0 and 1, one can conclude that when the ratio increases by 0.01, *ceteris paribus*, wages increases in `r round(betas_pols[7]*0.01*100,3)`\%
+
+
+# Binary choice models
+
+\begin{equation}
+highbp_{it} = \beta_0 + \beta_1 weight_{it} + \beta_2 height_{it} +  \beta_3 age_{it} +  \beta_4 age^{2}_{it} +  \beta_5 female_{i} + \beta_6 loglead_{it} + \beta_7 sizplace_{it} + \beta_8 female_{i}*height_{it} + \varepsilon_{it}
+\end{equation}
+
+
+```{r include=FALSE}
+df1 <- read_dta("nhanes2d_v2.dta")
+```
+
+```{r include=FALSE}
+# OLS
+ols <- lm(highbp ~ weight + height + age + age2 + female + loglead + factor(sizplace) + female*height, data = df1)
+
+summary(ols)
+
+library("margins")
+(m1 <- margins(ols))
+
+summary(m1)
+
+betas <-coef(ols)
+r2 <- summary(ols)$r.squared
+```
+
+```{r echo=FALSE, include=FALSE}
+# Probit
+probit <- glm(highbp ~ weight + height + age + age2 + female + loglead + factor(sizplace) + female*height, data = df1, family = binomial(link = "probit"))
+summary(probit)
+
+(m2 <- margins(probit, type="response"))
+summary(m2)
+betas_probit <-margins(probit)
+```
+
+For simplification, we will analyse the coefficients of marginal effects of the probit model. The coefficients for the marginal effects of LPM and logit should be read in the same fashion.
+A weight increase in 1 unit, on average, and *ceteris paribus* is associated with an increase in the probability of high blood pressure by 0.96 percentage points (pp). An increase in one unit of height decreases the likelihood of having high blood pressure by 0.59 pp. Females are less likely to have high blood pressure than males in 4.16 pp. A one-year increase in age, on average and with everything else constant, increases the likelihood of high blood pressure by 0.9 pp. When "lead" increases in 1%, the probability of high blood pressure rises in 0.0437x0.01x100, that is, 0.044 pp.
+
+
+```{r echo=FALSE, include=FALSE}
+# Logit
+logit <- glm(highbp ~ weight + height + age + age2 + female + loglead + factor(sizplace) + female*height, data = df1, family = binomial(link = "logit"))
+summary(logit)
+
+(m3 <- margins(logit))
+
+summary(m3)
+```
+```{r, echo=FALSE, warning=FALSE, results='asis'}
+#export results 3 models
+stargazer(ols,probit,logit, 
+  model.names=FALSE,
+  model.numbers = FALSE, title = "Regression",
+  column.labels = c("M1 - OLS", "M2 - Probit", "M3 - Logit"),
+  label = "regressions",
+  table.placement = "!ht",
+  notes.append = TRUE,
+  notes.align="l",
+  notes="Standard errors in parentheses.",
+  header = FALSE,
+  no.space = TRUE,
+  #covariate.labels = c("Height","Weight","Age", "Female"),
+  omit = c("Constant"),
+  omit.stat = c("adj.rsq","f","ser"),
+  omit.yes.no = c("Constant",""),
+  digits = 4,
+  digits.extra = 4,
+  dep.var.caption="",
+  dep.var.labels.include = FALSE,
+  style = "qje",
+  type = "html",
+  out = "Tabela_modelos_binarios.html")
+```
+
+## Marginal effects
+
+### Marginal effects - OLS
+
+```{r echo=FALSE, include=TRUE}
+
+summary(m1)
+
+```
+
+### Marginal effects - probit
+
+```{r echo=FALSE, include=TRUE}
+summary(m2)
+
+```
+
+### Marginal effects - logit
+
+```{r echo=FALSE, include=TRUE}
+summary(m3)
+```
+
+
+# Panel data estimation with OLS
+```{r echo=FALSE, include=FALSE}
+# Start by loading the dataset and creat needed varibles
+nlswork <- read_dta("nlswork.dta")
+
+nls_nomiss <- na.omit(nlswork)
+write_dta(nls_nomiss,"nls_nomiss.dta")
+
+nlswork_clean <- drop_na(subset(nlswork,select = c(idcode, year, 
+                                                   ln_wage, union, 
+                                                   collgrad, age, 
+                                                   tenure, 
+                                                   not_smsa, south, c_city)))
+
+# *Create new variables*
+
+nlswork_clean$agesq <- nlswork_clean$age^2
+nlswork_clean$tensq <- nlswork_clean$tenure^2
+
+```
+
+### Pooled OLS model
+
+```{r Pooled OLS, include=FALSE}
+  ols <- lm(data = nlswork_clean, ln_wage ~ union +
+              collgrad + age + agesq + tenure + tensq +
+              not_smsa + south + c_city)
+          summary(ols)
+  
+  pols <- plm(data = nlswork_clean, ln_wage ~ union +
+                collgrad +age +agesq +tenure +tensq +
+                not_smsa +south +c_city, model="pooling", index=c("idcode", "year"))
+          
+          summary(pols)
+```
+
+
+```{r Export regression output, echo=FALSE}
+  stargazer(ols,pols,title = "Regression analysis", 
+            model.numbers = FALSE,
+            column.labels = c("OLS","Pooled"),
+            label = "regressions",
+            table.placement = "!ht",
+            notes.append = TRUE,
+            notes.align="l",
+            notes="Standard errors in parentheses.",
+            header = FALSE,
+            no.space = TRUE,
+            covariate.labels = c("Union","Collage Graduate","Age","Age sqrd.",
+                                 "Tenure","Tenure sqrd.","Not SMSA","South","City"),
+            omit = c("Constant"),
+            omit.stat = c("adj.rsq","f","ser"),
+            digits = 3,
+            digits.extra = 5,
+            omit.yes.no = c("Constant",""),
+            dep.var.caption="",
+            dep.var.labels.include = FALSE,
+            style = "qje",
+            type="text")
+```
+
+```{r echo=FALSE, include=FALSE}
+# CLUSTERED Standard-errors
+  pols_robust <- coeftest(pols, function(x) vcovHC(x, type = 'sss')) 
+```
+
+```{r Export regression output2, echo=FALSE}
+  stargazer(pols,pols_robust,title = "Regression analysis", 
+            model.numbers = FALSE,
+            column.labels = c("Pooled","Pooled (cluster)"),
+            label = "regressions",
+            table.placement = "!ht",
+            notes.append = TRUE,
+            notes.align="l",
+            notes="Standard errors in parentheses.",
+            header = FALSE,
+            no.space = TRUE,
+            covariate.labels = c("Union","Collage graduate","Age","Age sqrd.",
+                                 "Tenure","Tenure sqrd.","Not SMSA","South","City"),
+            omit = c("Constant"),
+            omit.stat = c("adj.rsq","f","ser"),
+            digits = 6,
+            digits.extra = 7,
+            omit.yes.no = c("Constant",""),
+            dep.var.caption="",
+            dep.var.labels.include = FALSE,
+            style = "qje",
+            type="text")
+
+```
+
+
+
+### *Random effects estimator (RE)*
+
+```{r echo=FALSE, include=FALSE}
+  re <- plm(data = nlswork_clean, ln_wage ~ union +
+              collgrad +age +agesq +tenure +tensq +
+              not_smsa +south +c_city, model="random",
+            index=c("idcode", "year"))
+      # summary(re)
+
+  re_robust <- coeftest(re, function(x) vcovHC(x, type = 'sss'))
+```
+
+
+```{r OUTPUT; POLS;POLS Robust;RE;RE Robust, echo=FALSE}
+  stargazer(pols,pols_robust,re,re_robust,title = "Regression analysis", 
+            model.numbers = FALSE,
+            column.labels = c("Pooled","Pooled (cluster)","RE","RE (cluster"),
+            label = "regressions",
+            table.placement = "!ht",
+            notes.append = TRUE,
+            notes.align="l",
+            notes="Standard errors in parentheses.",
+            header = FALSE,
+            no.space = TRUE,
+            covariate.labels = c("Union","College Graduate","Age","Age sqrd.",
+                                 "Tenure","Tenure sqrd.","Not SMSA","South","City"),
+            omit = c("Constant"),
+            omit.stat = c("adj.rsq","f","ser"),
+            digits = 3,
+            digits.extra = 5,
+            omit.yes.no = c("Constant",""),
+            dep.var.caption="",
+            dep.var.labels.include = FALSE,
+            style = "qje",
+            type="text")
+```
+
+## Fixed effects estimator (FE)
+
+```{r echo=FALSE, include=FALSE}
+  fe <- plm(data = nlswork_clean, ln_wage ~ union +
+              collgrad +age +agesq +tenure +tensq +
+              not_smsa +south +c_city, model="within", index=c("idcode", "year"))
+      
+      summary(fe)
+```
+
+```{r OUTPUT -- POLS;RE;FE, echo=FALSE}
+  stargazer(pols,re,fe,title = "Regression analysis", 
+            model.numbers = FALSE,
+            column.labels = c("Pooled","RE","FE"),
+            label = "regressions",
+            table.placement = "!ht",
+            notes.append = TRUE,
+            notes.align="l",
+            notes="Standard errors in parentheses.",
+            header = FALSE,
+            no.space = TRUE,
+            covariate.labels = c("Union","College","Age","Age sqrd.","Tenure",
+                                 "Tenure sqrd.","Not SMSA","South","City"),
+            omit = c("Constant"),
+            omit.stat = c("adj.rsq","f","ser"),
+            digits = 6,
+            digits.extra = 7,
+            omit.yes.no = c("Constant",""),
+            dep.var.caption="",
+            dep.var.labels.include = FALSE,
+            style = "qje",
+            type="text")
+
+```
+
+
+```{r echo=FALSE, include=FALSE}
+# generate fixed-effects
+
+# nlswork_clean$specific_effects <- fixef(fe)
+
+# *Q3.1*
+
+  fe_robust <- coeftest(fe, function(x) vcovHC(x, type = 'sss')) 
+
+  ols_0 <- lm(data = nlswork_clean, ln_wage ~ union +
+                age +agesq +tenure +tensq +
+                not_smsa +south +c_city)
+
+```
+
+```{r Export regression output3, echo=FALSE}
+  stargazer(ols_0,fe,fe_robust,title = "Regression analysis", 
+            model.numbers = FALSE,
+            column.labels = c("OLS","FE","FE (cluster)"),
+            label = "regressions",
+            table.placement = "!ht",
+            notes.append = TRUE,
+            notes.align="l",
+            notes="Standard errors in parentheses.",
+            header = FALSE,
+            no.space = TRUE,
+            covariate.labels = c("Union","Age","Age sqrd.","Tenure",
+                                 "Tenure sqrd.","Not SMSA","South","City"),
+            omit = c("Constant"),
+            omit.stat = c("adj.rsq","f","ser"),
+            digits = 6,
+            digits.extra = 7,
+            omit.yes.no = c("Constant",""),
+            dep.var.caption="",
+            dep.var.labels.include = FALSE,
+            style = "qje",
+            type="text")
+
+```
+
+## Hausman test
+
+```{r Hausman test, echo=FALSE}
+# //Final slide 35
+# 
+# *Q4*
+  fe_0 <- plm(data = nlswork_clean, ln_wage ~ union +
+                age +agesq +tenure +tensq +
+                not_smsa +south +c_city, model="within", index=c("idcode", "year"))
+  re_0 <- plm(data = nlswork_clean, ln_wage ~ union +
+                age +agesq +tenure +tensq +
+                not_smsa +south +c_city, model="random", index=c("idcode", "year"))
+  
+  phtest(fe_0, re_0)    
+
+```
+
+
+The Hausman test was used in order to choose between FE and RE models. The null hypothesis underlying the Hausman test which the FE and RE estimators do not differ substantially is rejected at 1% level; the conclusion is that FE is the correct specification between these two models, and hence our preferred specification.
+
+# Conclusion
+
+In this paper we show that (...)
+
+# References
+
+```{r include=FALSE}
+
+options(knitr.duplicate.label = "allow")
+
+knitr::purl(input= "PEA_R_Script_Template_2022_2023.Rmd", output = "projeto_modelos_2022_2023.R")
+
+```
+
+

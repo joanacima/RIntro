@@ -153,10 +153,33 @@ Handling missing data is a crucial step in the exploratory data analysis. Depend
 In some situations, we may opt to fill in the missing data. For instance, one common method involves replacing missing values with the mean of the variable.
 
 ```{r }
-# Filling Missing Data (with the average - this is an example)
+
+library(tidyverse)
+# Filling Missing Data 
+
+## (with the average - this is an example - it does not make sense in this case)
 nlswork_filled <- nlswork %>%
   mutate(across(c("union"), ~ ifelse(is.na(.), mean(., na.rm = TRUE), .))) 
 
+## (with the mode)
+    ### Create a function to compute mode
+calc_mode <- function(x) {
+  tbl <- table(x, useNA = "no")  # ignora NAs
+  max_freq <- max(tbl)
+  mode_val <- as.numeric(names(tbl)[tbl == max_freq])
+  if(length(mode_val) > 1) {
+    warning("Existem múltiplas modas. Selecionando a menor.")
+    mode_val <- min(mode_val)
+  }
+  return(mode_val)
+}
+
+    ### compute the mode
+mode_union <- calc_mode(nlswork$union)
+
+    ### Replace NA by mode in column union
+  nlswork_filled <- nlswork %>%
+  mutate(union = if_else(is.na(union), mode_union, union))
 ```
 
 ## 6.2 Excluding rows with missing data
