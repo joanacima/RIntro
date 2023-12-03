@@ -117,7 +117,7 @@
 \makeatother
 \subtitle{Jump into a notebook}
 \author{Joana Cima}
-\date{13 outubro 2023}
+\date{03 dezembro 2023}
 
 \begin{document}
 \maketitle
@@ -163,8 +163,78 @@ which corresponds to the following code
 \begin{Highlighting}[]
 \NormalTok{nlswork }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"nlswork.xlsx"}\NormalTok{))}
 \CommentTok{\# nlswork \textless{}{-} read\_dta("nlswork.dta") \# in case you have a Stata data source}
+
+\FunctionTok{head}\NormalTok{(nlswork)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+##   idcode year birth_yr age  race msp nev_mar grade collgrad not_smsa c_city
+## 1      1   70       51  18 black   0       1    12        0        0      1
+## 2      1   71       51  19 black   1       0    12        0        0      1
+## 3      1   72       51  20 black   1       0    12        0        0      1
+## 4      1   73       51  21 black   1       0    12        0        0      1
+## 5      1   75       51  23 black   1       0    12        0        0      1
+## 6      1   77       51  25 black   0       0    12        0        0      1
+##   south ind_code occ_code union wks_ue  ttl_exp     tenure hours wks_work
+## 1     0        6        3    NA      2 1.083333 0.08333334    20       27
+## 2     0        4        6    NA     22 1.275641 0.08333334    44       10
+## 3     0        4        6     1      0 2.256410 0.91666669    40       51
+## 4     0        4        6    NA      0 2.314102 0.08333334    40        3
+## 5     0        5        6    NA      0 2.775641 0.16666667    10       24
+## 6     0       12        8     0      0 3.775641 1.50000000    32       52
+##    ln_wage
+## 1 1.451214
+## 2 1.028620
+## 3 1.589977
+## 4 1.780273
+## 5 1.777012
+## 6 1.778681
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{colnames}\NormalTok{(nlswork)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "idcode"   "year"     "birth_yr" "age"      "race"     "msp"     
+##  [7] "nev_mar"  "grade"    "collgrad" "not_smsa" "c_city"   "south"   
+## [13] "ind_code" "occ_code" "union"    "wks_ue"   "ttl_exp"  "tenure"  
+## [19] "hours"    "wks_work" "ln_wage"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{str}\NormalTok{(nlswork)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 'data.frame':    28534 obs. of  21 variables:
+##  $ idcode  : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ year    : num  70 71 72 73 75 77 78 80 83 85 ...
+##  $ birth_yr: num  51 51 51 51 51 51 51 51 51 51 ...
+##  $ age     : num  18 19 20 21 23 25 26 28 31 33 ...
+##  $ race    : chr  "black" "black" "black" "black" ...
+##  $ msp     : num  0 1 1 1 1 0 0 0 0 0 ...
+##  $ nev_mar : num  1 0 0 0 0 0 0 0 0 0 ...
+##  $ grade   : num  12 12 12 12 12 12 12 12 12 12 ...
+##  $ collgrad: num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ not_smsa: num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ c_city  : num  1 1 1 1 1 1 1 1 1 1 ...
+##  $ south   : num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ ind_code: num  6 4 4 4 5 12 5 5 5 5 ...
+##  $ occ_code: num  3 6 6 6 6 8 6 6 6 6 ...
+##  $ union   : num  NA NA 1 NA NA 0 NA 1 1 1 ...
+##  $ wks_ue  : num  2 22 0 0 0 0 7 0 NA 0 ...
+##  $ ttl_exp : num  1.08 1.28 2.26 2.31 2.78 ...
+##  $ tenure  : num  0.0833 0.0833 0.9167 0.0833 0.1667 ...
+##  $ hours   : num  20 44 40 40 10 32 52 45 49 42 ...
+##  $ wks_work: num  27 10 51 3 24 52 4 75 101 97 ...
+##  $ ln_wage : num  1.45 1.03 1.59 1.78 1.78 ...
+\end{verbatim}
 
 \hypertarget{data-manipulation-check-the-pipe-operator}{%
 \section{4. Data manipulation -- check the pipe operator,
@@ -198,7 +268,7 @@ observations}\label{filter-a-subset-of-observations}}
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{nlswork\_f}\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{filter}\NormalTok{(age }\SpecialCharTok{\textgreater{}} \DecValTok{40}\NormalTok{) }
+  \FunctionTok{filter}\NormalTok{(age }\SpecialCharTok{\textgreater{}} \DecValTok{20}\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
@@ -219,21 +289,24 @@ sequence}\label{manipulate-the-data-in-a-single-sequence}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{nlswork1}\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%} 
+\NormalTok{nlswork\_new }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{rename}\NormalTok{(}\AttributeTok{cae =}\NormalTok{ ind\_code) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{select}\NormalTok{(idcode, ln\_wage, age) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{filter}\NormalTok{(age }\SpecialCharTok{\textgreater{}} \DecValTok{40}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(ln\_wage, age, year, race, union, collgrad, cae, ttl\_exp, hours ) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter}\NormalTok{(age}\SpecialCharTok{\textgreater{}=}\DecValTok{20}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
   \FunctionTok{mutate}\NormalTok{(}\AttributeTok{age2=}\NormalTok{age}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{visualize-missing-information}{%
-\section{5. Visualize missing
-information:}\label{visualize-missing-information}}
+\hypertarget{detecting-and-handling-missing-data}{%
+\section{5. Detecting and Handling Missing
+Data}\label{detecting-and-handling-missing-data}}
+
+\hypertarget{detect-missing-data}{%
+\subsection{5.1 Detect Missing Data}\label{detect-missing-data}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{vis\_miss}\NormalTok{(nlswork)}
+\FunctionTok{vis\_miss}\NormalTok{(nlswork\_new)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -241,7 +314,7 @@ information:}\label{visualize-missing-information}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{gg\_miss\_var}\NormalTok{(nlswork) }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"Total missing values for each variable"}\NormalTok{)}
+\FunctionTok{gg\_miss\_var}\NormalTok{(nlswork\_new) }\SpecialCharTok{+} \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"Total missing values for each variable"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -249,7 +322,7 @@ information:}\label{visualize-missing-information}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{gg\_miss\_upset}\NormalTok{(nlswork)}
+\FunctionTok{gg\_miss\_upset}\NormalTok{(nlswork\_new)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -257,7 +330,7 @@ information:}\label{visualize-missing-information}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{gg\_miss\_fct}\NormalTok{(}\AttributeTok{x =}\NormalTok{ nlswork,}\AttributeTok{fct =}\NormalTok{ year)}
+\FunctionTok{gg\_miss\_fct}\NormalTok{(}\AttributeTok{x =}\NormalTok{ nlswork\_new,}\AttributeTok{fct =}\NormalTok{ year)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -268,14 +341,14 @@ information:}\label{visualize-missing-information}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{vis\_dat}\NormalTok{(nlswork)}
+\FunctionTok{vis\_dat}\NormalTok{(nlswork\_new)}
 \end{Highlighting}
 \end{Shaded}
 
 \includegraphics{RIntro_files/figure-latex/unnamed-chunk-10-1.pdf}
 
 \hypertarget{handling-missing-data}{%
-\section{6. Handling Missing Data}\label{handling-missing-data}}
+\subsection{5.2. Handling Missing Data}\label{handling-missing-data}}
 
 Handling missing data is a crucial step in the exploratory data
 analysis. Depending on the nature and mechanism of the missingness, we
@@ -283,7 +356,7 @@ might decide to impute missing values or to exclude the observations
 with missing data.
 
 \hypertarget{filling-missing-data}{%
-\subsection{6.1 Filling Missing Data}\label{filling-missing-data}}
+\subsubsection{5.2.1 Filling Missing Data}\label{filling-missing-data}}
 
 In some situations, we may opt to fill in the missing data. For
 instance, one common method involves replacing missing values with the
@@ -300,35 +373,98 @@ mean of the variable.
 
 \DocumentationTok{\#\# (with the mode)}
     \DocumentationTok{\#\#\# Create a function to compute mode}
-\NormalTok{calc\_mode }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
-\NormalTok{  tbl }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(x, }\AttributeTok{useNA =} \StringTok{"no"}\NormalTok{)  }\CommentTok{\# ignora NAs}
-\NormalTok{  max\_freq }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(tbl)}
-\NormalTok{  mode\_val }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{names}\NormalTok{(tbl)[tbl }\SpecialCharTok{==}\NormalTok{ max\_freq])}
-  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{length}\NormalTok{(mode\_val) }\SpecialCharTok{\textgreater{}} \DecValTok{1}\NormalTok{) \{}
-    \FunctionTok{warning}\NormalTok{(}\StringTok{"Existem múltiplas modas. Selecionando a menor."}\NormalTok{)}
-\NormalTok{    mode\_val }\OtherTok{\textless{}{-}} \FunctionTok{min}\NormalTok{(mode\_val)}
-\NormalTok{  \}}
-  \FunctionTok{return}\NormalTok{(mode\_val)}
+
+\NormalTok{mode }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x) \{}
+\NormalTok{  ux }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(x)}
+\NormalTok{  ux[}\FunctionTok{which.max}\NormalTok{(}\FunctionTok{tabulate}\NormalTok{(}\FunctionTok{match}\NormalTok{(x, ux)))]}
 \NormalTok{\}}
 
-    \DocumentationTok{\#\#\# compute the mode}
-\NormalTok{mode\_union }\OtherTok{\textless{}{-}} \FunctionTok{calc\_mode}\NormalTok{(nlswork}\SpecialCharTok{$}\NormalTok{union)}
+\NormalTok{nlswork\_filled2 }\OtherTok{\textless{}{-}}\NormalTok{ nlswork}
 
-    \DocumentationTok{\#\#\# Replace NA by mode in column union}
-\NormalTok{  nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{union =} \FunctionTok{if\_else}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(union), mode\_union, union))}
+\NormalTok{union\_mode }\OtherTok{\textless{}{-}} \FunctionTok{mode}\NormalTok{(nlswork}\SpecialCharTok{$}\NormalTok{union[}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(nlswork}\SpecialCharTok{$}\NormalTok{union)])}
+\NormalTok{nlswork\_filled2}\SpecialCharTok{$}\NormalTok{union[}\FunctionTok{is.na}\NormalTok{(nlswork}\SpecialCharTok{$}\NormalTok{union)] }\OtherTok{\textless{}{-}}\NormalTok{ union\_mode}
 \end{Highlighting}
 \end{Shaded}
 
 \hypertarget{excluding-rows-with-missing-data}{%
-\subsection{6.2 Excluding rows with missing
+\subsubsection{5.2.2 Excluding rows with missing
 data}\label{excluding-rows-with-missing-data}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Or excluding rows with missing data}
+\NormalTok{nlswork\_no\_na }\OtherTok{\textless{}{-}} \FunctionTok{na.omit}\NormalTok{(nlswork\_new)}
+\end{Highlighting}
+\end{Shaded}
 
-\NormalTok{nlswork\_no\_na }\OtherTok{\textless{}{-}} \FunctionTok{na.omit}\NormalTok{(nlswork)}
+\hypertarget{detecting-and-handling-outliers}{%
+\section{6 Detecting and Handling
+Outliers}\label{detecting-and-handling-outliers}}
+
+\hypertarget{detecting-outliers}{%
+\subsection{6.1 Detecting Outliers}\label{detecting-outliers}}
+
+\hypertarget{using-boxplot-example-age-and-ln_wage}{%
+\subsubsection{6.1.1. Using Boxplot (example: age and
+ln\_wage)}\label{using-boxplot-example-age-and-ln_wage}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{boxplot}\NormalTok{(nlswork\_no\_na}\SpecialCharTok{$}\NormalTok{age, }\AttributeTok{main=}\StringTok{"Boxplot for Outlier Detection {-} Age"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{boxplot}\NormalTok{(nlswork\_no\_na}\SpecialCharTok{$}\NormalTok{ln\_wage, }\AttributeTok{main=}\StringTok{"Boxplot for Outlier Detection {-} ln\_wage"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-14-1.pdf}
+\#\#\# 6.1.2. Detecting Outliers using ``identify\_outliers'' (example:
+ln\_wage)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers }\OtherTok{\textless{}{-}} \FunctionTok{identify\_outliers}\NormalTok{(}\FunctionTok{as.data.frame}\NormalTok{(nlswork\_no\_na}\SpecialCharTok{$}\NormalTok{ln\_wage))}
+\NormalTok{extreme\_outliers }\OtherTok{\textless{}{-}}\NormalTok{ outliers[outliers}\SpecialCharTok{$}\NormalTok{is.extreme, ]}
+\NormalTok{extreme\_outliers}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     nlswork_no_na$ln_wage is.outlier is.extreme
+## 73               4.025415       TRUE       TRUE
+## 149              4.005049       TRUE       TRUE
+## 159              5.263916       TRUE       TRUE
+## 235              4.254619       TRUE       TRUE
+## 249              3.997510       TRUE       TRUE
+## 254              4.199647       TRUE       TRUE
+\end{verbatim}
+
+\hypertarget{handling-outliers}{%
+\subsection{6.2 Handling Outliers}\label{handling-outliers}}
+
+\hypertarget{removing-the-outliers-from-the-original-dataframe-nlswork_no_na}{%
+\subsubsection{6.2.1 Removing the outliers from the original dataframe
+nlswork\_no\_na}\label{removing-the-outliers-from-the-original-dataframe-nlswork_no_na}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{extreme\_values\_to\_remove }\OtherTok{\textless{}{-}}\NormalTok{ extreme\_outliers}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{nlswork\_no\_na$ln\_wage}\StringTok{\textasciigrave{}}
+\NormalTok{nlswork\_no\_outliers }\OtherTok{\textless{}{-}}\NormalTok{ nlswork\_no\_na[}\SpecialCharTok{!}\NormalTok{nlswork\_no\_na}\SpecialCharTok{$}\NormalTok{ln\_wage }\SpecialCharTok{\%in\%}\NormalTok{ extreme\_values\_to\_remove, ]}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{replacing-the-outliers-using-winsorize}{%
+\subsubsection{6.2.2 Replacing the outliers using
+winsorize}\label{replacing-the-outliers-using-winsorize}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nlswork\_no\_na}\SpecialCharTok{$}\NormalTok{ln\_wage\_winsorized }\OtherTok{\textless{}{-}} \FunctionTok{Winsorize}\NormalTok{(nlswork\_no\_na}\SpecialCharTok{$}\NormalTok{ln\_wage, }
+                                    \AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{0.99}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -342,97 +478,27 @@ data}\label{excluding-rows-with-missing-data}}
 \end{Shaded}
 
 \begin{verbatim}
-##      idcode          year          birth_yr          age      
-##  Min.   :   1   Min.   :70.00   Min.   :41.00   Min.   :16.0  
-##  1st Qu.:1280   1st Qu.:73.00   1st Qu.:46.00   1st Qu.:25.0  
-##  Median :2594   Median :78.00   Median :48.00   Median :30.0  
-##  Mean   :2589   Mean   :79.12   Mean   :48.11   Mean   :30.2  
-##  3rd Qu.:3859   3rd Qu.:83.00   3rd Qu.:51.00   3rd Qu.:35.0  
-##  Max.   :5159   Max.   :88.00   Max.   :54.00   Max.   :46.0  
-##      race                msp            nev_mar           grade      
-##  Length:13452       Min.   :0.0000   Min.   :0.0000   Min.   : 0.00  
-##  Class :character   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:12.00  
-##  Mode  :character   Median :1.0000   Median :0.0000   Median :12.00  
-##                     Mean   :0.6257   Mean   :0.2081   Mean   :12.68  
-##                     3rd Qu.:1.0000   3rd Qu.:0.0000   3rd Qu.:14.00  
-##                     Max.   :1.0000   Max.   :1.0000   Max.   :18.00  
-##     collgrad         not_smsa         c_city           south       
-##  Min.   :0.0000   Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
-##  1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000  
-##  Median :0.0000   Median :0.000   Median :0.0000   Median :0.0000  
-##  Mean   :0.1887   Mean   :0.284   Mean   :0.3417   Mean   :0.4081  
-##  3rd Qu.:0.0000   3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000  
-##  Max.   :1.0000   Max.   :1.000   Max.   :1.0000   Max.   :1.0000  
-##     ind_code         occ_code          union            wks_ue      
-##  Min.   : 1.000   Min.   : 1.000   Min.   :0.0000   Min.   : 0.000  
-##  1st Qu.: 5.000   1st Qu.: 3.000   1st Qu.:0.0000   1st Qu.: 0.000  
-##  Median : 7.000   Median : 3.000   Median :0.0000   Median : 0.000  
-##  Mean   : 7.842   Mean   : 4.839   Mean   :0.2286   Mean   : 2.112  
-##  3rd Qu.:11.000   3rd Qu.: 6.000   3rd Qu.:0.0000   3rd Qu.: 0.000  
-##  Max.   :12.000   Max.   :13.000   Max.   :1.0000   Max.   :75.000  
-##     ttl_exp           tenure            hours          wks_work     
-##  Min.   : 0.000   Min.   : 0.0000   Min.   :  1.0   Min.   :  0.00  
-##  1st Qu.: 3.417   1st Qu.: 0.8333   1st Qu.: 35.0   1st Qu.: 43.00  
-##  Median : 5.635   Median : 2.0833   Median : 40.0   Median : 52.00  
-##  Mean   : 6.773   Mean   : 3.4475   Mean   : 36.2   Mean   : 50.73  
-##  3rd Qu.: 9.263   3rd Qu.: 4.5000   3rd Qu.: 40.0   3rd Qu.: 58.00  
-##  Max.   :28.885   Max.   :25.9167   Max.   :168.0   Max.   :103.00  
-##     ln_wage     
-##  Min.   :0.000  
-##  1st Qu.:1.397  
-##  Median :1.690  
-##  Mean   :1.714  
-##  3rd Qu.:2.001  
-##  Max.   :5.264
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{summary}\NormalTok{(nlswork\_no\_na[,}\FunctionTok{c}\NormalTok{(}\StringTok{"grade"}\NormalTok{,}\StringTok{"union"}\NormalTok{,}\StringTok{"ln\_wage"}\NormalTok{)]) }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##      grade           union           ln_wage     
-##  Min.   : 0.00   Min.   :0.0000   Min.   :0.000  
-##  1st Qu.:12.00   1st Qu.:0.0000   1st Qu.:1.397  
-##  Median :12.00   Median :0.0000   Median :1.690  
-##  Mean   :12.68   Mean   :0.2286   Mean   :1.714  
-##  3rd Qu.:14.00   3rd Qu.:0.0000   3rd Qu.:2.001  
-##  Max.   :18.00   Max.   :1.0000   Max.   :5.264
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{str}\NormalTok{(nlswork\_no\_na) }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## 'data.frame':    13452 obs. of  21 variables:
-##  $ idcode  : num  1 1 1 1 1 1 2 2 2 2 ...
-##  $ year    : num  72 77 80 85 87 88 71 77 78 83 ...
-##  $ birth_yr: num  51 51 51 51 51 51 51 51 51 51 ...
-##  $ age     : num  20 25 28 33 35 37 19 25 26 31 ...
-##  $ race    : chr  "black" "black" "black" "black" ...
-##  $ msp     : num  1 0 0 0 0 0 1 1 1 1 ...
-##  $ nev_mar : num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ grade   : num  12 12 12 12 12 12 12 12 12 12 ...
-##  $ collgrad: num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ not_smsa: num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ c_city  : num  1 1 1 1 0 0 1 1 1 1 ...
-##  $ south   : num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ ind_code: num  4 12 5 5 5 5 4 4 4 4 ...
-##  $ occ_code: num  6 8 6 6 6 6 3 6 6 6 ...
-##  $ union   : num  1 0 1 1 1 1 0 1 1 1 ...
-##  $ wks_ue  : num  0 0 0 0 0 0 19 0 0 12 ...
-##  $ ttl_exp : num  2.26 3.78 5.29 7.16 8.99 ...
-##  $ tenure  : num  0.917 1.5 1.833 1.917 3.917 ...
-##  $ hours   : num  40 32 45 42 45 48 40 40 40 38 ...
-##  $ wks_work: num  51 52 75 97 95 70 13 52 52 37 ...
-##  $ ln_wage : num  1.59 1.78 2.55 2.61 2.54 ...
-##  - attr(*, "na.action")= 'omit' Named int [1:15082] 1 2 4 5 7 9 14 15 16 19 ...
-##   ..- attr(*, "names")= chr [1:15082] "1" "2" "4" "5" ...
+##     ln_wage           age             year           race          
+##  Min.   :0.000   Min.   :20.00   Min.   :70.00   Length:18703      
+##  1st Qu.:1.442   1st Qu.:27.00   1st Qu.:77.00   Class :character  
+##  Median :1.742   Median :32.00   Median :82.00   Mode  :character  
+##  Mean   :1.763   Mean   :31.63   Mean   :80.57                     
+##  3rd Qu.:2.065   3rd Qu.:36.00   3rd Qu.:85.00                     
+##  Max.   :5.264   Max.   :46.00   Max.   :88.00                     
+##      union           collgrad           cae            ttl_exp        
+##  Min.   :0.0000   Min.   :0.0000   Min.   : 1.000   Min.   : 0.01923  
+##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.: 5.000   1st Qu.: 4.13462  
+##  Median :0.0000   Median :0.0000   Median : 7.000   Median : 7.14103  
+##  Mean   :0.2349   Mean   :0.1999   Mean   : 7.892   Mean   : 7.85462  
+##  3rd Qu.:0.0000   3rd Qu.:0.0000   3rd Qu.:11.000   3rd Qu.:10.96795  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :12.000   Max.   :28.88462  
+##      hours             age2      ln_wage_winsorized
+##  Min.   :  1.00   Min.   : 400   Min.   :0.000     
+##  1st Qu.: 35.00   1st Qu.: 729   1st Qu.:1.442     
+##  Median : 40.00   Median :1024   Median :1.742     
+##  Mean   : 36.77   Mean   :1036   Mean   :1.760     
+##  3rd Qu.: 40.00   3rd Qu.:1296   3rd Qu.:2.065     
+##  Max.   :168.00   Max.   :2116   Max.   :2.963
 \end{verbatim}
 
 \hypertarget{export-descriptive-statistics-table-to-html-with-2-digits}{%
@@ -446,11 +512,11 @@ digits}\label{export-descriptive-statistics-table-to-html-with-2-digits}}
 \subsection{Statistic N Mean St.~Dev. Min
 Max}\label{statistic-n-mean-st.-dev.-min-max}}
 
-age 13,452 30.20 6.41 16 46\\
-collgrad 13,452 0.19 0.39 0 1\\
-ttl\_exp 13,452 6.77 4.41 0.00 28.88 union 13,452 0.23 0.42 0 1\\
-hours 13,452 36.20 10.03 1 168
-------------------------------------------
+age 18,703 31.63 5.96 20 46\\
+collgrad 18,703 0.20 0.40 0 1\\
+ttl\_exp 18,703 7.85 4.54 0.02 28.88 union 18,703 0.23 0.42 0 1\\
+hours 18,703 36.77 9.59 1 168 ln\_wage\_winsorized 18,703 1.76 0.46 0.00
+2.96 ---------------------------------------------------
 
 \hypertarget{export-descriptive-statistics-table-to-txt-with-3-digits}{%
 \subsection{7.2. Export descriptive statistics table to txt, with 3
@@ -463,11 +529,12 @@ digits}\label{export-descriptive-statistics-table-to-txt-with-3-digits}}
 \subsection{Statistic N Mean St.~Dev. Min
 Max}\label{statistic-n-mean-st.-dev.-min-max-1}}
 
-age 13,452 30.203 6.414 16 46\\
-collgrad 13,452 0.189 0.391 0 1\\
-ttl\_exp 13,452 6.773 4.409 0.000 28.885 union 13,452 0.229 0.420 0 1\\
-hours 13,452 36.199 10.034 1 168\\
----------------------------------------------
+age 18,703 31.634 5.960 20 46\\
+collgrad 18,703 0.200 0.400 0 1\\
+ttl\_exp 18,703 7.855 4.536 0.019 28.885 union 18,703 0.235 0.424 0 1\\
+hours 18,703 36.772 9.586 1 168\\
+ln\_wage\_winsorized 18,703 1.760 0.458 0.000 2.963
+------------------------------------------------------
 
 \hypertarget{transposing-the-descriptive-statistics-table}{%
 \subsection{7.3. Transposing the descriptive statistics
@@ -476,21 +543,23 @@ table}\label{transposing-the-descriptive-statistics-table}}
 \hypertarget{shorter-statistics-2}{%
 \section{Shorter statistics}\label{shorter-statistics-2}}
 
-\hypertarget{statistic-age-collgrad-ttl_exp-union-hours}{%
-\subsection{Statistic age collgrad ttl\_exp union
-hours}\label{statistic-age-collgrad-ttl_exp-union-hours}}
+\hypertarget{statistic-age-collgrad-ttl_exp-union-hours-ln_wage_winsorized}{%
+\subsection{Statistic age collgrad ttl\_exp union hours
+ln\_wage\_winsorized}\label{statistic-age-collgrad-ttl_exp-union-hours-ln_wage_winsorized}}
 
-N 13,452 13,452 13,452 13,452 13,452 Mean 30.203 0.189 6.773 0.229
-36.199 St.~Dev. 6.414 0.391 4.409 0.420 10.034 Min 16 0 0.000 0 1\\
-Max 46 1 28.885 1 168\\
------------------------------------------------
+N 18,703 18,703 18,703 18,703 18,703 18,703\\
+Mean 31.634 0.200 7.855 0.235 36.772 1.760\\
+St.~Dev. 5.960 0.400 4.536 0.424 9.586 0.458\\
+Min 20 0 0.019 0 1 0.000\\
+Max 46 1 28.885 1 168 2.963\\
+------------------------------------------------------------------
 
 \hypertarget{export-to-pdf}{%
 \subsection{7.4. Export to pdf}\label{export-to-pdf}}
 
 \% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy
-Institute. E-mail: marek.hlavac at gmail.com \% Date and time: sex, out
-13, 2023 - 11:00:24
+Institute. E-mail: marek.hlavac at gmail.com \% Date and time: dom, dez
+03, 2023 - 00:20:09
 
 \begin{table}[!htbp] \centering 
   \caption{Shorter statistics} 
@@ -500,10 +569,10 @@ Institute. E-mail: marek.hlavac at gmail.com \% Date and time: sex, out
 \hline \\[-1.8ex] 
 Statistic & age & collgrad & ttl\_exp & union & hours \\ 
 \hline \\[-1.8ex] 
-N & 13,452 & 13,452 & 13,452 & 13,452 & 13,452 \\ 
-Mean & 30.203 & 0.189 & 6.773 & 0.229 & 36.199 \\ 
-St. Dev. & 6.414 & 0.391 & 4.409 & 0.420 & 10.034 \\ 
-Min & 16 & 0 & 0.000 & 0 & 1 \\ 
+N & 18,703 & 18,703 & 18,703 & 18,703 & 18,703 \\ 
+Mean & 31.634 & 0.200 & 7.855 & 0.235 & 36.772 \\ 
+St. Dev. & 5.960 & 0.400 & 4.536 & 0.424 & 9.586 \\ 
+Min & 20 & 0 & 0.019 & 0 & 1 \\ 
 Max & 46 & 1 & 28.885 & 1 & 168 \\ 
 \hline \\[-1.8ex] 
 \end{tabular} 
@@ -513,15 +582,15 @@ Max & 46 & 1 & 28.885 & 1 & 168 \\
 \section{8. Visualisation to explore your
 data}\label{visualisation-to-explore-your-data}}
 
-\hypertarget{relationships-between-continuous-variables}{%
-\subsection{8.1. Relationships Between Continuous
-Variables}\label{relationships-between-continuous-variables}}
+\hypertarget{relationship-between-continuous-variables}{%
+\subsection{8.1. Relationship Between Continuous
+Variables}\label{relationship-between-continuous-variables}}
 
 \begin{verbatim}
 ## `geom_smooth()` using formula = 'y ~ x'
 \end{verbatim}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-23-1.pdf}
 
 \hypertarget{categorical-variable}{%
 \subsection{8.2. Categorical variable}\label{categorical-variable}}
@@ -534,11 +603,20 @@ Variables}\label{relationships-between-continuous-variables}}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-19-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-24-1.pdf}
 
 \hypertarget{continuous-variable-distributions}{%
 \subsection{8.3. Continuous Variable
 Distributions}\label{continuous-variable-distributions}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ nlswork\_no\_na) }\SpecialCharTok{+} \FunctionTok{geom\_histogram}\NormalTok{(}\AttributeTok{mapping =} \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ age), }\AttributeTok{binwidth =} \DecValTok{1}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{breaks =} \FunctionTok{seq}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{50}\NormalTok{, }\AttributeTok{by =} \DecValTok{5}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-25-1.pdf}
 
 \hypertarget{categorical-and-continuous-variables}{%
 \subsection{8.4 Categorical and continuous
@@ -546,13 +624,13 @@ variables}\label{categorical-and-continuous-variables}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{nlswork\_no\_na }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\FunctionTok{as.factor}\NormalTok{(collgrad), }\AttributeTok{y=}\NormalTok{ln\_wage)) }\SpecialCharTok{+}
+\NormalTok{nlswork\_no\_na }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\FunctionTok{as.factor}\NormalTok{(collgrad), }\AttributeTok{y=}\NormalTok{ln\_wage\_winsorized)) }\SpecialCharTok{+}
   \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{fill=}\StringTok{"slateblue"}\NormalTok{, }\AttributeTok{alpha=}\FloatTok{0.2}\NormalTok{) }\SpecialCharTok{+} 
   \FunctionTok{xlab}\NormalTok{(}\StringTok{"College graduate (1=Yes)"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-26-1.pdf}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -568,7 +646,7 @@ variables}\label{categorical-and-continuous-variables}}
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 \end{verbatim}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-22-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-27-1.pdf}
 
 \hypertarget{correlation}{%
 \section{9. Correlation}\label{correlation}}
@@ -579,123 +657,8 @@ variables}\label{categorical-and-continuous-variables}}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{RIntro_files/figure-latex/unnamed-chunk-23-1.pdf}
+\includegraphics{RIntro_files/figure-latex/unnamed-chunk-28-1.pdf}
 
-\hypertarget{assessment}{%
-\section{10. Assessment}\label{assessment}}
-
-\hypertarget{problem-1-data-importing}{%
-\subsection{Problem 1: Data Importing}\label{problem-1-data-importing}}
-
-Import the ``card'' dataset.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-2-visualizing-missing-data}{%
-\subsection{Problem 2: Visualizing Missing
-Data}\label{problem-2-visualizing-missing-data}}
-
-Graphically show which variables have the most missing values.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-3-handling-missing-data}{%
-\subsection{Problem 3: Handling Missing
-Data}\label{problem-3-handling-missing-data}}
-
-Adopt a strategy to handle the missing values.How many observations were
-lost?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-4-descriptive-statistics-after-missing-data-handling}{%
-\subsection{Problem 4: Descriptive Statistics after Missing Data
-Handling}\label{problem-4-descriptive-statistics-after-missing-data-handling}}
-
-Present statistics of the dataset that has been treated for missing
-values.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-5-relationship-visualization}{%
-\subsection{Problem 5: Relationship
-Visualization}\label{problem-5-relationship-visualization}}
-
-Graphically show the relationship between age and salary.Does the
-relationship between the variables make sense?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-6-age-distribution}{%
-\subsection{Problem 6: Age
-Distribution}\label{problem-6-age-distribution}}
-
-Display the distribution of age.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-7-correlation}{%
-\subsection{Problem 7: Correlation}\label{problem-7-correlation}}
-
-What is the correlation value between age and salary?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{problem-8}{%
-\subsection{Problem 8:}\label{problem-8}}
-
-In the nlswork\_no\_na dataset, can you identify any patterns or trends
-in the data related to unionized workers and their salaries?
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
-
-\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
-\end{Highlighting}
-\end{Shaded}
-
+```
 
 \end{document}
