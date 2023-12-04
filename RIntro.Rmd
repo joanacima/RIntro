@@ -33,7 +33,7 @@ rm(list = ls())
 here()
 getwd()
 
-knitr::opts_knit$set(root.dir = "C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
+#knitr::opts_knit$set(root.dir = "C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
 
 # Define working directory
 setwd("C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
@@ -341,91 +341,102 @@ ggpairs(nlswork_no_na[, c("age","ttl_exp","hours")], title="Correlogram with ggp
 ```{r include=FALSE}
 #CONVERSÃO DO CÓDIGO RMARKDOWN PARA O CÓDIGO R
 
-options(knitr.duplicate.label = "allow")
+#options(knitr.duplicate.label = "allow")
 
-knitr::purl(input= "RIntro.Rmd", output = "RIntro.R")
-
-```
-
+#knitr::purl(input= "RIntro.Rmd", output = "RIntro.R")
 
 ```
 
 
+# 10. Assessment
 
-<!-- # 10. Assessment -->
+<!-- Please put the R solution between 'begin solution' and 'end solution', but analyze the results outside the chunks -->
 
-<!-- ## Problem 1: Data Importing -->
-<!-- Import the "card" dataset. -->
+## Problem 1: Data Importing
+Import the "card" dataset.
 
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
-
-<!-- ## Problem 2: Visualizing Missing Data -->
-<!-- Graphically show which variables have the most missing values. Please elaborate. -->
-
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
-
-<!-- ## Problem 3: Handling Missing Data -->
-<!-- Adopt a strategy to handle the missing values. Why did you follow that strategy? -->
-<!-- How many observations were lost? -->
-
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
-
-<!-- ## Problem 4: Descriptive Statistics after Missing Data Handling -->
-<!-- Present statistics of the dataset that has been treated for missing values. -->
-
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
-
-<!-- ## Problem 5: Relationship Visualization -->
-<!-- Graphically show the relationship between age and salary.Does the relationship between the variables make sense? -->
-
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
-
-<!-- ## Problem 6: Age Distribution -->
-<!-- Display the distribution of salary. -->
-
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
-
-<!-- ## Problem 7: Correlation -->
-<!-- What is the correlation value between age and salary? -->
-
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
-
-<!-- #END SOLUTION -->
-<!-- ``` -->
+```{r,warning=FALSE}
+#BEGIN SOLUTION
 
 
-<!-- ## Problem 8:  -->
-<!-- In the nlswork_no_na dataset, can you identify any patterns or trends in the data related to unionized workers and their salaries? -->
+#END SOLUTION
+```
 
-<!-- ```{r,warning=FALSE} -->
-<!-- #BEGIN SOLUTION -->
+## Problem 2: Visualizing Missing Data
+Graphically show which variables have the most missing values. Please elaborate.
 
-<!-- #END SOLUTION -->
-<!-- ``` -->
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 3: Handling Missing Data
+Adopt a strategy to handle the missing values. Why did you follow that strategy?
+How many observations were lost?
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 4: Detecting outliers
+Analyze if the variable lwage has outliers. If so, how will you deal with them? Explain step by step.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+
+#END SOLUTION
+```
+
+
+
+## Problem 5: Descriptive Statistics after Missing Data and Outliers Handling
+Present statistics of the dataset that has been treated for missing values and outliers.
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 6: Relationship Visualization
+Graphically show the relationship between age and salary.Does the relationship between the variables make sense?
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 7: Age Distribution
+Display the distribution of Age
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+## Problem 8: Correlation
+What is the correlation value between age and salary?
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
+
+
+## Problem 9:
+In the nlswork_no_na dataset, can you identify any patterns or trends in the data related to unionized workers and their salaries?
+
+```{r,warning=FALSE}
+#BEGIN SOLUTION
+
+#END SOLUTION
+```
 
 
