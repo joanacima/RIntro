@@ -36,7 +36,9 @@ getwd()
 #knitr::opts_knit$set(root.dir = "C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
 
 # Define working directory
-setwd("C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
+
+here()
+#setwd("C:\\Users\\Joana Cima\\Documents\\GitHub\\RIntro")
 
 ```
 
