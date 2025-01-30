@@ -117,7 +117,7 @@
 \makeatother
 \subtitle{Jump into a notebook}
 \author{Joana Cima}
-\date{03 dezembro 2023}
+\date{05 dezembro 2023}
 
 \begin{document}
 \maketitle
@@ -368,7 +368,7 @@ mean of the variable.
 \CommentTok{\# Filling Missing Data }
 
 \DocumentationTok{\#\# (with the average {-} this is an example {-} it does not make sense in this case)}
-\NormalTok{nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%} 
   \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"union"}\NormalTok{), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\FunctionTok{mean}\NormalTok{(., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), .))) }
 
 \DocumentationTok{\#\# (with the mode)}
@@ -558,8 +558,8 @@ Max 46 1 28.885 1 168 2.963\\
 \subsection{7.4. Export to pdf}\label{export-to-pdf}}
 
 \% Table created by stargazer v.5.2.3 by Marek Hlavac, Social Policy
-Institute. E-mail: marek.hlavac at gmail.com \% Date and time: dom, dez
-03, 2023 - 00:20:09
+Institute. E-mail: marek.hlavac at gmail.com \% Date and time: ter, dez
+05, 2023 - 22:05:41
 
 \begin{table}[!htbp] \centering 
   \caption{Shorter statistics} 
@@ -659,6 +659,146 @@ variables}\label{categorical-and-continuous-variables}}
 
 \includegraphics{RIntro_files/figure-latex/unnamed-chunk-28-1.pdf}
 
-```
+\hypertarget{assessment}{%
+\section{10. Assessment}\label{assessment}}
+
+\hypertarget{problem-1-data-importing}{%
+\subsection{Problem 1: Data Importing}\label{problem-1-data-importing}}
+
+Import the ``card'' dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+\NormalTok{card }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{read\_excel}\NormalTok{(}\StringTok{"card.xlsx"}\NormalTok{))}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-2-visualizing-missing-data}{%
+\subsection{Problem 2: Visualizing Missing
+Data}\label{problem-2-visualizing-missing-data}}
+
+Graphically show which variables have the most missing values. Please
+elaborate.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-3-handling-missing-data}{%
+\subsection{Problem 3: Handling Missing
+Data}\label{problem-3-handling-missing-data}}
+
+Adopt a strategy to handle the missing values. Why did you follow that
+strategy? How many observations were lost?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-4-detecting-outliers}{%
+\subsection{Problem 4: Detecting
+outliers}\label{problem-4-detecting-outliers}}
+
+Analyze if the variable lwage has outliers. If so, how will you deal
+with them? Explain step by step.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-5-descriptive-statistics-after-missing-data-and-outliers-handling}{%
+\subsection{Problem 5: Descriptive Statistics after Missing Data and
+Outliers
+Handling}\label{problem-5-descriptive-statistics-after-missing-data-and-outliers-handling}}
+
+Present statistics of the dataset that has been treated for missing
+values and outliers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+\NormalTok{card\_media }\OtherTok{\textless{}{-}}\NormalTok{ card }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"IQ"}\NormalTok{, }\StringTok{"fatheduc"}\NormalTok{, }\StringTok{"motheduc"}\NormalTok{, }\StringTok{"KWW"}\NormalTok{, }\StringTok{"married"}\NormalTok{, }\StringTok{"libcrd14"}\NormalTok{),}
+                \SpecialCharTok{\textasciitilde{}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\FunctionTok{mean}\NormalTok{(., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), .))) }
+
+\NormalTok{nlswork\_filled }\OtherTok{\textless{}{-}}\NormalTok{ nlswork }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\FunctionTok{across}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"union"}\NormalTok{), }\SpecialCharTok{\textasciitilde{}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(.), }\FunctionTok{mean}\NormalTok{(., }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), .))) }
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-6-relationship-visualization}{%
+\subsection{Problem 6: Relationship
+Visualization}\label{problem-6-relationship-visualization}}
+
+Graphically show the relationship between age and salary.Does the
+relationship between the variables make sense?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-7-age-distribution}{%
+\subsection{Problem 7: Age
+Distribution}\label{problem-7-age-distribution}}
+
+Display the distribution of Age
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-8-correlation}{%
+\subsection{Problem 8: Correlation}\label{problem-8-correlation}}
+
+What is the correlation value between age and salary?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-9}{%
+\subsection{Problem 9:}\label{problem-9}}
+
+In the nlswork\_no\_na dataset, can you identify any patterns or trends
+in the data related to unionized workers and their salaries?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}\RegionMarkerTok{BEGIN}\CommentTok{ SOLUTION}
+
+\CommentTok{\#}\RegionMarkerTok{END}\CommentTok{ SOLUTION}
+\end{Highlighting}
+\end{Shaded}
+
 
 \end{document}

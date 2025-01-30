@@ -172,7 +172,7 @@ library(tidyverse)
 # Filling Missing Data 
 
 ## (with the average - this is an example - it does not make sense in this case)
-nlswork_filled <- nlswork %>%
+nlswork_filled <- nlswork %>% 
   mutate(across(c("union"), ~ ifelse(is.na(.), mean(., na.rm = TRUE), .))) 
 
 ## (with the mode)
@@ -359,7 +359,7 @@ Import the "card" dataset.
 
 ```{r,warning=FALSE}
 #BEGIN SOLUTION
-
+card <- as.data.frame(read_excel("card.xlsx"))
 
 #END SOLUTION
 ```
